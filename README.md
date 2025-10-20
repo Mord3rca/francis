@@ -4,20 +4,23 @@ A light OpenVPN Home installation based on RPi4
 
 ## First setup
 
-Use `dd` to copy **francis** image to an SD card:
+### Writing image on sdcard
+
+[rpi-imager](https://github.com/raspberrypi/rpi-imager) can be used, just set *Custom Image* in the OS field.
+Also image customisation is not yet supported.
+
+Or use `dd` to copy **francis** image to an SD card:
 
 ```sh
 # dd if=/path/to/francis.img of=/sd/block/device status=progress
 ```
-
-Maybe [rpi-imager](https://github.com/raspberrypi/rpi-imager) can be used with a custom image.
 
 ## Additionnal configuration
 
 RPi like configuration is planned but not yet on the product. So you gonna need to mount partition 2
 and changes some files manually.
 
-Assuming you have mounted partition 2 at **/mountpoint** for all useg/example.
+Assuming you have mounted partition 2 at **/mountpoint** for all use/example.
 
 ### Allow SSH root connection
 
@@ -51,3 +54,38 @@ You can use */etc/pivpn/default-install-config* for the default configuration
 
 However, it is recommanded to modify the default file first to modify at least `pivpnHOST` key
 so it watch the DynDNS entry configured or the WAN IPv4 of your router.
+
+Once the installation is completed, just add a new user with:
+
+```sh
+# pivpn add [nopass]
+```
+
+**nopass** is should be used if your VPN client does not support password protected certs.
+
+## Network Setup
+
+### Static IP
+
+In case of power cut, DHCP failure etc ... It is recommended to set a static IPv4 on **francis**.
+
+To do so, you will have to modify the file **/etc/systemd/network/eth0.network** according to
+[systemd.network(5)](https://man.archlinux.org/man/systemd.network.5) manual.
+
+Example of static IP configuration:
+
+```
+[Match]
+Name=eth0
+
+[Network]
+Address=192.168.1.100/24
+Gateway=192.168.1.1
+DNS=192.168.1.1
+```
+
+### NAT
+
+There is 2 services running on **francis**, OpenVPN & SSH.
+
+So, if you are behind a router, you will need to forward port 22 (TCP) and 1194 (UDP)
