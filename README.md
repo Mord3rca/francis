@@ -89,3 +89,10 @@ DNS=192.168.1.1
 There is 2 services running on **francis**, OpenVPN & SSH.
 
 So, if you are behind a router, you will need to forward port 22 (TCP) and 1194 (UDP)
+
+## Client configuration
+
+List of tested clients to run with **francis**:
+
+* [Opal GL-SFT1200](clients/gl-sft1200.md)
+* [Network Manager](clients/network-manager.md)
